@@ -56,7 +56,7 @@ for player in range(int(players.split()[0])):
 
 st.write("_______________________________________________________")
 
-def place_index(index):
+def players_rank(index):
     return int(sorted(players_total_points.values(), reverse=True)[index])
 
 for player in range(int(players.split()[0])):
@@ -68,7 +68,6 @@ for player in range(int(players.split()[0])):
 
 winner = sorted(players_total_points, key=players_total_points.get, reverse=True)[0]
 second_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[1]
-third_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[2]
 
 def write_winner():
      st.markdown(f'<p class="big-font">Player {winner} is the winner with {players_total_points[winner]} points!</p>', unsafe_allow_html=True)
@@ -76,18 +75,28 @@ def write_second_place():
     st.markdown(f'<p class="big-font">Player {second_place} is in second place with {players_total_points[second_place]} points!</p>', unsafe_allow_html=True)
 def write_third_place():
     st.markdown(f'<p class="big-font">Player {third_place} is in third place with {players_total_points[third_place]} points!</p>', unsafe_allow_html=True)
+def write_tied_players():
+    st.markdown(f'<p class="big-font">Players {winner} and {second_place} are tied for first place with {players_total_points[winner]} points each!</p>', unsafe_allow_html=True)
+def all_tied_players():
+    st.markdown(f'<p class="big-font">Players {winner}, {second_place} and {third_place} are all tied for first place with {players_total_points[second_place]} points each!</p>', unsafe_allow_html=True)
 
-if int(players.split()[0]) > 1:
-        if place_index(0) == place_index(1):
-            if place_index(0) == place_index(2):
-                st.markdown(f'<p class="big-font">Players {winner}, {second_place} and {third_place} are all tied for first place with {players_total_points[second_place]} points each!</p>', unsafe_allow_html=True)
+if int(players.split()[0]) > 2:
+        third_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[2]
+        if players_rank(0) == players_rank(1):
+            if players_rank(0) == players_rank(2):
+                all_tied_players()
             else:
-                st.markdown(f'<p class="big-font">Player {winner} and Player {second_place} are tied for first place with {players_total_points[winner]} points each!</p>', unsafe_allow_html=True)
-                st.markdown(f'<p class="big-font">Player {third_place} is in third place with {players_total_points[third_place]} points!</p>', unsafe_allow_html=True)
+                write_tied_players()
+                write_third_place()
+                
         else:
             write_winner()
             write_second_place()
             write_third_place()
+
+elif players_rank(0) == players_rank(1):
+    write_tied_players()
+
 else:
     write_winner()
     write_second_place()
