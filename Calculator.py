@@ -10,7 +10,6 @@ players = st.selectbox(
 point_types = [
     "Wonder Points (Board)",
     "Military Points (Red)",
-    "Science Points (Green)",
     "Guild Points (Purple)",
     "Victory Points (Blue)",
     "Economic Points (Yellow)"
@@ -21,11 +20,37 @@ players_total_points = {}
 for player in range(int(players.split()[0])):
     st.write("_______________________________________________________")
     total_points = 0
-    user_input =st.text_input(f"Player {player+1} Number of coins (Not points from coins)")
+    coin_input =st.text_input(f"Player {player+1} Number of coins (Not points from coins)")
     try:
-        total_points += int(user_input)//3
+        total_points += int(coin_input)//3
     except ValueError:
         total_points += 0
+    Compass_input = st.text_input(f"Player {player+1} Number of Compass)")
+    Gear_input = st.text_input(f"Player {player+1} Number of Gears)")
+    Tablet_input = st.text_input(f"Player {player+1} Number of Tablets)")
+    try:
+        compass_points = int(Compass_input) ** 2
+    except ValueError:
+        compass_points = 0
+    try:
+        gear_points = int(Gear_input) ** 2
+    except ValueError:
+        gear_points = 0
+    try:
+        tablet_points = int(Tablet_input) ** 2
+    except ValueError:
+        tablet_points = 0
+    squared_points = compass_points + gear_points + tablet_points
+    try:
+        complete_sets = min(int(Compass_input), int(Gear_input), int(Tablet_input))
+    except ValueError:
+        complete_sets = 0
+    set_bonus_points = complete_sets * 7
+    try:
+         total_points += squared_points + set_bonus_points
+    except ValueError:
+            total_points += 0
+
     for point_type in point_types:
         user_input =st.text_input(f"Player {player+1} {point_type}")
         try:
