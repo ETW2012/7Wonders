@@ -20,11 +20,19 @@ for player in range(int(players.split()[0])):
     player_names.append(name)
 
 point_types = [
-    "Wonder Points (Board)",
-    "Military Points (Red)",
-    "Guild Points (Purple)",
-    "Victory Points (Blue)",
-    "Economic Points (Yellow)"
+    "Wonder Points:",
+    "Military Points:",
+    "Guild Points:",
+    "Victory Points:",
+    "Economic Points:"
+]
+
+card_colours = [
+     "Board",
+     "Victory tokens",
+     "Purple cards",
+     "Blue cards",
+     "Yellow cards"
 ]
 
 players_total_points = {}
@@ -39,14 +47,15 @@ def test_if_integer_and_square(value):
 for player in range(int(players.split()[0])):
     make_line()
     total_points = 0
-    coin_input = st.text_input(f"Player {player+1} Number of coins (Not points from coins)")
+    coin_input = st.text_input(label = f"Player {player+1} Number of coins:", placeholder = "Not points from coins")
     try:
         total_points += int(coin_input)//3
     except ValueError:
         total_points += 0
-   
+    card_colour_index = 0
     for point_type in point_types:
-        user_input =st.text_input(f"Player {player+1} {point_type}")
+        user_input = st.text_input(label = f"Player {player+1} {point_type}", placeholder = card_colours[card_colour_index])
+        card_colour_index += 1
         try:
             total_points += int(user_input)
         except ValueError:
@@ -54,11 +63,11 @@ for player in range(int(players.split()[0])):
 
     compass, gear, tablet = st.columns(3)
     with compass:
-        Compass_input = st.text_input(f"Player {player+1} number of compasses")
+        Compass_input = st.text_input(label = f"Player {player+1} Sciences (green):", placeholder = f"player {player+1} number of compasses")
     with gear:
-        Gear_input = st.text_input(f"Player {player+1} number of gears")
+        Gear_input = st.text_input(label = "", placeholder = f"Player {player+1} number of gears")
     with tablet:
-        Tablet_input = st.text_input(f"Player {player+1} number of tablets")
+        Tablet_input = st.text_input(label = "", placeholder = f"Player {player+1} number of tablets")
     compass_points = test_if_integer_and_square(Compass_input)
     gear_points = test_if_integer_and_square(Gear_input)
     tablet_points = test_if_integer_and_square(Tablet_input)
@@ -99,12 +108,12 @@ if (Calculate_score):
         return [point if players_total_points[place] == 1 else points for point, points in [("point", "points")]][0]
     
     def write_winner():
-#       if not player_names[int(winner)-1] == "":
+#        if player_names[int(winner)-1] in player_names:
             st.header(f"{player_names[int(winner)-1]} is the winner with {players_total_points[winner]} {point_or_points(winner)}!")
 #        else:
 #           st.header(f"Player {winner} is the winner with {players_total_points[winner]} {point_or_points(winner)}!")
     def write_second_place():
-#        if not player_names[int(second_place)-1] == "":
+#        if player_names[int(second_place)-1] in player_names:
             st.header(f"{player_names[int(second_place)-1]} is in second place with {players_total_points[second_place]} {point_or_points(second_place)}!")
 #        else:
 #            st.header(f"Player {second_place} is in second place with {players_total_points[second_place]} {point_or_points(second_place)}!")
