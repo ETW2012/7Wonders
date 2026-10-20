@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.image("https://cdn.svc.asmodee.net/production-rprod/storage/downloads/games/7wonders/wallpapers/desktop/7wonders-wallpaper-1-1598892294KBXAc.jpg", width=1000)
+st.image("C:/Users/User/Downloads/7 wonders banner.jpg")
 
 st.title("7 Wonders Score Calculator")
 
