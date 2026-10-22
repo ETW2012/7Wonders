@@ -15,12 +15,14 @@ players = st.selectbox(
     options = ["2 Players", "3 Players", "4 Players", "5 Players", "6 Players", "7 Players"]
 )
 
-player_names = []
+player_count = int(players.split()[0])
+player_names = [""] * player_count
 
-for player in range(int(players.split()[0])):
-    player_names.append("no-name")
-    name = st.text_input(f"Player {player+1} Name")
-    player_names[player] = (name)
+for start in range(0, player_count, 3):
+    name_columns = st.columns(3)
+    for player in range(start, min(start + 3, player_count)):
+        with name_columns[player - start]:
+            player_names[player] = st.text_input(f"Player {player+1} Name")
 
 def player_display_name(player_number):
     name = player_names[player_number - 1].strip()
@@ -51,27 +53,44 @@ def test_if_integer_and_square(value):
     except ValueError:
         return 0
 
-for player in range(int(players.split()[0])):
+for player in range(player_count):
     make_line()
     total_points = 0
-    coin_input = st.text_input(
-        label = f"Player {player+1} Number of coins:",
-        placeholder = "Not points from coins")
+    first_row = st.columns(3)
+
+    with first_row[0]:
+        coin_input = st.text_input(
+            label = f"Player {player+1} Number of coins:",
+            placeholder = "Not points from coins")
+    point_inputs = []
+    with first_row[1]:
+        point_inputs.append(st.text_input(
+            label = f"Player {player+1} {point_types[0]}",
+            placeholder = card_colours[0]))
+    with first_row[2]:
+        point_inputs.append(st.text_input(
+            label = f"Player {player+1} {point_types[1]}",
+            placeholder = card_colours[1]))
     try:
         total_points += int(coin_input)//3
     except ValueError:
         total_points += 0
-    card_colour_index = 0
-    for point_type in point_types:
-        user_input = st.text_input(
-            label = f"Player {player+1} {point_type}",
-            placeholder = card_colours[card_colour_index])
-        card_colour_index += 1
+
+    second_row = st.columns(3)
+    for index, column in enumerate(second_row, start=2):
+        with column:
+            point_inputs.append(st.text_input(
+                label = f"Player {player+1} {point_types[index]}",
+                placeholder = card_colours[index]))
+
+    for user_input in point_inputs:
         try:
             total_points += int(user_input)
         except ValueError:
             total_points += 0
 
+    st.write("")
+    
     compass, gear, tablet = st.columns(3)
     with compass:
         Compass_input = st.text_input(
