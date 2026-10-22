@@ -125,38 +125,22 @@ if (Calculate_score):
 
     winner = sorted(players_total_points, key=players_total_points.get, reverse=True)[0]
     second_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[1]
+    def name(place):
+        return player_display_name(int(place))
     
     def write_winner():
-   #     if player_names[int(winner)-1] == "no-name":
-            st.header(f"{player_display_name(int(winner))} is the winner with {players_total_points[winner]} {point_or_points(winner)}!")
-    #    else:
-     #       st.header(f"{player_names[int(winner)-1]} is the winner with {players_total_points[winner]} {point_or_points(winner)}!")
+        st.header(f"{name(winner)} is the winner with {players_total_points[winner]} {point_or_points(winner)}!")
     def write_second_place():
-#        if player_names[int(second_place)-1] in player_names:
-            st.header(f"{player_display_name(int(second_place))} is in second place with {players_total_points[second_place]} {point_or_points(second_place)}!")
-#        else:
-#            st.header(f"Player {second_place} is in second place with {players_total_points[second_place]} {point_or_points(second_place)}!")
+        st.header(f"{name(second_place)} is in second place with {players_total_points[second_place]} {point_or_points(second_place)}!")
     def write_third_place():
-#        if not player_names[int(third_place)-1] == "":
-            st.header(f"{player_display_name(int(third_place))} is in third place with {players_total_points[third_place]} {point_or_points(third_place)}!")
-#        else:
-#            st.header(f"Player {third_place} is in third place with {players_total_points[third_place]} {point_or_points(third_place)}!")
+        st.header(f"{name(third_place)} is in third place with {players_total_points[third_place]} {point_or_points(third_place)}!")
     def write_tied_players_for_first_place():
-        #if not player_names[int(winner)-1] == "" and not player_names[int(second_place)-1] == "":
-            st.header(f"{player_display_name(int(winner))} and {player_display_name(int(second_place))} are tied for first place with {players_total_points[winner]} {point_or_points(winner)} each!")
-        #else:
-            #st.header(f"Players {winner} and {second_place} are tied for first place with {players_total_points[winner]} {point_or_points(winner)} each!")
+        st.header(f"{name(winner)} and {name(second_place)} are tied for first place with {players_total_points[winner]} {point_or_points(winner)} each!")
     def all_tied_players():
-        #if not player_names[int(winner)-1] == "" and not player_names[int(second_place)-1] == "" and not player_names[int(third_place)-1]:
-            st.header(f"{player_display_name(int(winner))}, {player_display_name(int(second_place))} and {player_display_name(int(third_place))} are all tied for first place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
-        #else:
-            #st.header(f"Players {winner}, {second_place} and {third_place} are all tied for first place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
+            st.header(f"{name(winner)}, {name(second_place)} and {name(third_place)} are all tied for first place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
     def write_tied_players_for_second_place():
-        #if not player_names[int(second_place)-1] == "" and not player_names[int(third_place)-1]:
-            st.header(f"{player_display_name(int(second_place))} and {player_display_name(int(third_place))} are tied for second place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
-        #else:
-            #st.header(f"Players {second_place} and {third_place} are tied for second place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
-    
+            st.header(f"{name(second_place)} and {name(third_place)} are tied for second place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
+
     if int(players.split()[0]) > 2:
         third_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[2]
         if players_rank(0) == players_rank(1):
@@ -185,4 +169,3 @@ if (Calculate_score):
 if st.button("Reset"):
     #Reloads borwser
     streamlit_js_eval(js_expressions="parent.window.location.reload()")
-
