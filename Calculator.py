@@ -22,6 +22,10 @@ for player in range(int(players.split()[0])):
     name = st.text_input(f"Player {player+1} Name")
     player_names[player] = (name)
 
+def player_display_name(player_number):
+    name = player_names[player_number - 1].strip()
+    return name if name else f"Player {player_number}"
+
 point_types = [
     "Wonder Points:",
     "Military Points:",
@@ -109,10 +113,11 @@ if (Calculate_score):
 
 
     for player in range(int(players.split()[0])):
-        if players_total_points[str(player+1)] == 1:
-            st.subheader(f'{player_names[player]} got a total of {players_total_points[str(player+1)]} point')
+        player_number = player + 1
+        if players_total_points[str(player_number)] == 1:
+            st.subheader(f'{player_display_name(player_number)} got a total of {players_total_points[str(player_number)]} point')
         else:
-            st.subheader(f'{player_names[player]} got a total of {players_total_points[str(player+1)]} points') 
+            st.subheader(f'{player_display_name(player_number)} got a total of {players_total_points[str(player_number)]} points')
     
     make_line()
 
@@ -122,33 +127,33 @@ if (Calculate_score):
     second_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[1]
     
     def write_winner():
-        if player_names[int(winner)-1] == "no-name":
-            st.header(f"Player {winner} is the winner with {players_total_points[winner]} {point_or_points(winner)}!")
-        else:
-            st.header(f"{player_names[int(winner)-1]} is the winner with {players_total_points[winner]} {point_or_points(winner)}!")
+   #     if player_names[int(winner)-1] == "no-name":
+            st.header(f"{player_display_name(int(winner))} is the winner with {players_total_points[winner]} {point_or_points(winner)}!")
+    #    else:
+     #       st.header(f"{player_names[int(winner)-1]} is the winner with {players_total_points[winner]} {point_or_points(winner)}!")
     def write_second_place():
 #        if player_names[int(second_place)-1] in player_names:
-            st.header(f"{player_names[int(second_place)-1]} is in second place with {players_total_points[second_place]} {point_or_points(second_place)}!")
+            st.header(f"{player_display_name(int(second_place))} is in second place with {players_total_points[second_place]} {point_or_points(second_place)}!")
 #        else:
 #            st.header(f"Player {second_place} is in second place with {players_total_points[second_place]} {point_or_points(second_place)}!")
     def write_third_place():
 #        if not player_names[int(third_place)-1] == "":
-            st.header(f"{player_names[int(third_place)-1]} is in third place with {players_total_points[third_place]} {point_or_points(third_place)}!")
+            st.header(f"{player_display_name(int(third_place))} is in third place with {players_total_points[third_place]} {point_or_points(third_place)}!")
 #        else:
 #            st.header(f"Player {third_place} is in third place with {players_total_points[third_place]} {point_or_points(third_place)}!")
     def write_tied_players_for_first_place():
         #if not player_names[int(winner)-1] == "" and not player_names[int(second_place)-1] == "":
-            st.header(f"{player_names[int(winner)-1]} and {player_names[int(second_place)-1]} are tied for first place with {players_total_points[winner]} {point_or_points(winner)} each!")
+            st.header(f"{player_display_name(int(winner))} and {player_display_name(int(second_place))} are tied for first place with {players_total_points[winner]} {point_or_points(winner)} each!")
         #else:
             #st.header(f"Players {winner} and {second_place} are tied for first place with {players_total_points[winner]} {point_or_points(winner)} each!")
     def all_tied_players():
         #if not player_names[int(winner)-1] == "" and not player_names[int(second_place)-1] == "" and not player_names[int(third_place)-1]:
-            st.header(f"{player_names[int(winner)-1]}, {player_names[int(second_place)-1]} and {player_names[int(third_place)-1]} are all tied for first place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
+            st.header(f"{player_display_name(int(winner))}, {player_display_name(int(second_place))} and {player_display_name(int(third_place))} are all tied for first place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
         #else:
             #st.header(f"Players {winner}, {second_place} and {third_place} are all tied for first place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
     def write_tied_players_for_second_place():
         #if not player_names[int(second_place)-1] == "" and not player_names[int(third_place)-1]:
-            st.header(f"{player_names[int(second_place)-1]} and {player_names[int(third_place)-1]} are tied for second place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
+            st.header(f"{player_display_name(int(second_place))} and {player_display_name(int(third_place))} are tied for second place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
         #else:
             #st.header(f"Players {second_place} and {third_place} are tied for second place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
     
@@ -180,3 +185,4 @@ if (Calculate_score):
 if st.button("Reset"):
     #Reloads borwser
     streamlit_js_eval(js_expressions="parent.window.location.reload()")
+
