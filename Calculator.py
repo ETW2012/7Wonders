@@ -1,5 +1,4 @@
 import streamlit as st
-
 from streamlit_js_eval import streamlit_js_eval
 
 st.image("C:/Users/User/Downloads/7 wonders banner.jpg")
@@ -17,9 +16,11 @@ players = st.selectbox(
 )
 
 player_names = []
+
 for player in range(int(players.split()[0])):
+    player_names.append("no-name")
     name = st.text_input(f"Player {player+1} Name")
-    player_names.append(name)
+    player_names[player] = (name)
 
 point_types = [
     "Wonder Points:",
@@ -57,13 +58,11 @@ for player in range(int(players.split()[0])):
     except ValueError:
         total_points += 0
     card_colour_index = 0
-    key = 0
     for point_type in point_types:
         user_input = st.text_input(
             label = f"Player {player+1} {point_type}",
             placeholder = card_colours[card_colour_index])
         card_colour_index += 1
-        key += 1
         try:
             total_points += int(user_input)
         except ValueError:
@@ -105,27 +104,28 @@ if (Calculate_score):
     def players_rank(index):
         return int(sorted(players_total_points.values(), reverse=True)[index])
 
+    def point_or_points(place):
+        return [point if players_total_points[place] == 1 else points for point, points in [("point", "points")]][0]
+
+
     for player in range(int(players.split()[0])):
         if players_total_points[str(player+1)] == 1:
-                st.subheader(f'{player_names[player]} got a total of {players_total_points[str(player+1)]} point')
+            st.subheader(f'{player_names[player]} got a total of {players_total_points[str(player+1)]} point')
         else:
-            st.subheader(f'{player_names[player]} got a total of {players_total_points[str(player+1)]} points')
-
+            st.subheader(f'{player_names[player]} got a total of {players_total_points[str(player+1)]} points') 
+    
     make_line()
 
     places = ["winner", "second place", "third place"]
 
     winner = sorted(players_total_points, key=players_total_points.get, reverse=True)[0]
     second_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[1]
-
-    def point_or_points (place):
-        return [point if players_total_points[place] == 1 else points for point, points in [("point", "points")]][0]
     
     def write_winner():
-        if player_names[int(winner)-1] in player_names:
-            st.header(f"{player_names[int(winner)-1]} is the winner with {players_total_points[winner]} {point_or_points(winner)}!")
+        if player_names[int(winner)-1] == "no-name":
+            st.header(f"Player {winner} is the winner with {players_total_points[winner]} {point_or_points(winner)}!")
         else:
-           st.header(f"Player {winner} is the winner with {players_total_points[winner]} {point_or_points(winner)}!")
+            st.header(f"{player_names[int(winner)-1]} is the winner with {players_total_points[winner]} {point_or_points(winner)}!")
     def write_second_place():
 #        if player_names[int(second_place)-1] in player_names:
             st.header(f"{player_names[int(second_place)-1]} is in second place with {players_total_points[second_place]} {point_or_points(second_place)}!")
