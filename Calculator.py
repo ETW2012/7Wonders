@@ -1,9 +1,30 @@
+import base64
+from pathlib import Path
+
 import streamlit as st
 from streamlit_js_eval import streamlit_js_eval
 
-st.image("C:/Users/User/Downloads/7 wonders banner.jpg")
-
 st.title("7 Wonders Score Calculator")
+
+background_image = base64.b64encode(
+    Path("C:/Users/User/Downloads/7 wonders banner.jpg").read_bytes()
+).decode("ascii")
+
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-image:
+            linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.55)),
+            url("data:image/jpeg;base64,{background_image}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 def make_line():
     st.write("_______________________________________________________")
@@ -205,4 +226,3 @@ if (Calculate_score):
 if st.button("Reset"):
     #Reloads borwser
     streamlit_js_eval(js_expressions="parent.window.location.reload()")
-
