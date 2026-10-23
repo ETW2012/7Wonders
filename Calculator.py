@@ -4,6 +4,7 @@ import streamlit as st
 from streamlit_js_eval import streamlit_js_eval
 
 st.title("7 Wonders Score Calculator", text_alignment="center")
+
 background_image = base64.b64encode(
     Path("C:/Users/User/Downloads/7 wonders banner.jpg").read_bytes()
 ).decode("ascii")
@@ -116,19 +117,19 @@ for player in range(player_count):
     image_1, compass, image_2, gear, image_3, tablet = st.columns(6)
     with image_1:
         st.write("")
-        st.image("C:/Users/User/Downloads/hackclub things/3.png", width = 120)
+        st.image("C:/Users/User/Downloads/hackclub things/3.png", width = 130)
     with compass:
         Compass_input = st.text_input("", key = f"{player + 1} compasses")
         
     with image_2:
         st.write("")
-        st.image("C:/Users/User/Downloads/hackclub things/2.png", width = 120)
+        st.image("C:/Users/User/Downloads/hackclub things/2.png", width = 130)
     with gear:
         Gear_input = st.text_input("", key = f"{player + 1} gears")
     
     with image_3:
         st.write("")
-        st.image("C:/Users/User/Downloads/hackclub things/1.png", width = 120)
+        st.image("C:/Users/User/Downloads/hackclub things/1.png", width = 130)
     with tablet:
         Tablet_input = st.text_input("", key = f"{player + 1} tablets")
     
@@ -236,5 +237,7 @@ if (Calculate_score):
 if st.button("Reset"):
     #Reloads borwser
     streamlit_js_eval(js_expressions="parent.window.location.reload()")
+
+make_line()
 
 st.write("By: Elliot Wijoyo")
