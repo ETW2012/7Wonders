@@ -113,21 +113,23 @@ for player in range(player_count):
         except ValueError:
             total_points += 0
 
-    st.write("")
+    st.write(f"{name(player+1)}'s Sciences (green):")
 
-    compass, gear, tablet = st.columns(3)
+    image_1, compass, image_2, gear, image_3, tablet = st.columns(6)
+    with image_1:
+        st.image("C:/Users/User/Downloads/hackclub things/3.png", width = 120)
     with compass:
-        Compass_input = st.text_input(
-            label = f"{name(player+1)}'s Sciences (green):",
-            placeholder = f"{name(player+1)}'s number of compasses")
+        Compass_input = st.text_input("", key = f"{player + 1} compasses")
+        
+    with image_2:
+        st.image("C:/Users/User/Downloads/hackclub things/2.png", width = 100)
     with gear:
-        Gear_input = st.text_input(
-            label = "",
-            placeholder = f"{name(player+1)}'s number of gears")
+        Gear_input = st.text_input("", key = f"{player + 1} gears")
+    
+    with image_3:
+        st.image("C:/Users/User/Downloads/hackclub things/1.png", width = 100)
     with tablet:
-        Tablet_input = st.text_input(
-            label = "",
-            placeholder = f"{name(player+1)}'s number of tablets")
+        Tablet_input = st.text_input("", key = f"{player + 1} tablets")
     
     compass_points = test_if_integer_and_square(Compass_input)
     gear_points = test_if_integer_and_square(Gear_input)
