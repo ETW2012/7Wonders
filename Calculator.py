@@ -90,7 +90,7 @@ for player in range(player_count):
             total_points += 0
 
     st.write("")
-    
+
     compass, gear, tablet = st.columns(3)
     with compass:
         Compass_input = st.text_input(
@@ -102,8 +102,9 @@ for player in range(player_count):
             placeholder = f"Player {player+1} number of gears")
     with tablet:
         Tablet_input = st.text_input(
-        label = "",
-        placeholder = f"Player {player+1} number of tablets")
+            label = "",
+            placeholder = f"Player {player+1} number of tablets")
+    
     compass_points = test_if_integer_and_square(Compass_input)
     gear_points = test_if_integer_and_square(Gear_input)
     tablet_points = test_if_integer_and_square(Tablet_input)
@@ -144,6 +145,7 @@ if (Calculate_score):
 
     winner = sorted(players_total_points, key=players_total_points.get, reverse=True)[0]
     second_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[1]
+
     def name(place):
         return player_display_name(int(place))
     
@@ -153,33 +155,48 @@ if (Calculate_score):
         st.header(f"{name(second_place)} is in second place with {players_total_points[second_place]} {point_or_points(second_place)}!")
     def write_third_place():
         st.header(f"{name(third_place)} is in third place with {players_total_points[third_place]} {point_or_points(third_place)}!")
-    def write_tied_players_for_first_place():
+    def write_tied_for_first_place():
         st.header(f"{name(winner)} and {name(second_place)} are tied for first place with {players_total_points[winner]} {point_or_points(winner)} each!")
     def all_tied_players():
-            st.header(f"{name(winner)}, {name(second_place)} and {name(third_place)} are all tied for first place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
-    def write_tied_players_for_second_place():
-            st.header(f"{name(second_place)} and {name(third_place)} are tied for second place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
+        st.header(f"{name(winner)}, {name(second_place)} and {name(third_place)} are all tied for first place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
+    def write_tied_for_second_place():
+        st.header(f"{name(second_place)} and {name(third_place)} are tied for second place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
+    def write_tied_for_third():
+        st.header(f"{name(third_place)} and {name(fourth_place)} are tied for thrid place with {players_total_points[third_place]} {point_or_points(third_place)} each!")
 
     if int(players.split()[0]) > 2:
         third_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[2]
+        if int(players.split()[0]) > 3:
+            fourth_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[3]
+        
         if players_rank(0) == players_rank(1):
             if players_rank(0) == players_rank(2):
                 all_tied_players()
+            
+            elif players_rank(2) == players_rank(3):
+                write_tied_for_first_place()
+                write_tied_for_third()
+            
             else:
-                write_tied_players_for_first_place()
+                write_tied_for_first_place()
                 write_third_place()
                 
         elif players_rank(1) == players_rank(2):
             write_winner()
-            write_tied_players_for_second_place()
-        
+            write_tied_for_second_place()
+
         else:
-            write_winner()
-            write_second_place()
-            write_third_place()
+            if players_rank(2) == players_rank(3):
+                write_winner()
+                write_second_place()
+                write_tied_for_third()
+            else:
+                write_winner()
+                write_second_place()
+                write_third_place()
 
     elif players_rank(0) == players_rank(1):
-        write_tied_players_for_first_place()
+        write_tied_for_first_place()
 
     else:
         write_winner()
@@ -188,3 +205,4 @@ if (Calculate_score):
 if st.button("Reset"):
     #Reloads borwser
     streamlit_js_eval(js_expressions="parent.window.location.reload()")
+
