@@ -49,6 +49,9 @@ def player_display_name(player_number):
     name = player_names[player_number - 1].strip()
     return name if name else f"Player {player_number}"
 
+def name(place):
+    return player_display_name(int(place))
+    
 point_types = [
     "Wonder Points:",
     "Military Points:",
@@ -81,16 +84,16 @@ for player in range(player_count):
 
     with first_row[0]:
         coin_input = st.text_input(
-            label = f"Player {player+1} Number of coins:",
+            label = f"{name(player+1)}'s Number of coins:",
             placeholder = "Not points from coins")
     point_inputs = []
     with first_row[1]:
         point_inputs.append(st.text_input(
-            label = f"Player {player+1} {point_types[0]}",
+            label = f"{name(player+1)}'s {point_types[0]}",
             placeholder = card_colours[0]))
     with first_row[2]:
         point_inputs.append(st.text_input(
-            label = f"Player {player+1} {point_types[1]}",
+            label = f"Player {name(player+1)}'s {point_types[1]}",
             placeholder = card_colours[1]))
     try:
         total_points += int(coin_input)//3
@@ -101,7 +104,7 @@ for player in range(player_count):
     for index, column in enumerate(second_row, start=2):
         with column:
             point_inputs.append(st.text_input(
-                label = f"Player {player+1} {point_types[index]}",
+                label = f"{name(player+1)}'s {point_types[index]}",
                 placeholder = card_colours[index]))
 
     for user_input in point_inputs:
@@ -115,16 +118,16 @@ for player in range(player_count):
     compass, gear, tablet = st.columns(3)
     with compass:
         Compass_input = st.text_input(
-            label = f"Player {player+1} Sciences (green):",
-            placeholder = f"player {player+1} number of compasses")
+            label = f"{name(player+1)}'s Sciences (green):",
+            placeholder = f"{name(player+1)}'s number of compasses")
     with gear:
         Gear_input = st.text_input(
             label = "",
-            placeholder = f"Player {player+1} number of gears")
+            placeholder = f"{name(player+1)}'s number of gears")
     with tablet:
         Tablet_input = st.text_input(
             label = "",
-            placeholder = f"Player {player+1} number of tablets")
+            placeholder = f"{name(player+1)}'s number of tablets")
     
     compass_points = test_if_integer_and_square(Compass_input)
     gear_points = test_if_integer_and_square(Gear_input)
@@ -156,9 +159,9 @@ if (Calculate_score):
     for player in range(int(players.split()[0])):
         player_number = player + 1
         if players_total_points[str(player_number)] == 1:
-            st.subheader(f'{player_display_name(player_number)} got a total of {players_total_points[str(player_number)]} point')
+            st.subheader(f'{name(player_number)} got a total of {players_total_points[str(player_number)]} point')
         else:
-            st.subheader(f'{player_display_name(player_number)} got a total of {players_total_points[str(player_number)]} points')
+            st.subheader(f'{name(player_number)} got a total of {players_total_points[str(player_number)]} points')
     
     make_line()
 
@@ -167,9 +170,6 @@ if (Calculate_score):
     winner = sorted(players_total_points, key=players_total_points.get, reverse=True)[0]
     second_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[1]
 
-    def name(place):
-        return player_display_name(int(place))
-    
     def write_winner():
         st.header(f"{name(winner)} is the winner with {players_total_points[winner]} {point_or_points(winner)}!")
     def write_second_place():
@@ -226,3 +226,5 @@ if (Calculate_score):
 if st.button("Reset"):
     #Reloads borwser
     streamlit_js_eval(js_expressions="parent.window.location.reload()")
+
+st.write("By: Elliot Wijoyo")
