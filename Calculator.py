@@ -93,7 +93,7 @@ for player in range(player_count):
             placeholder = card_colours[0]))
     with first_row[2]:
         point_inputs.append(st.text_input(
-            label = f"Player {name(player+1)}'s {point_types[1]}",
+            label = f"{name(player+1)}'s {point_types[1]}",
             placeholder = card_colours[1]))
     try:
         total_points += int(coin_input)//3
