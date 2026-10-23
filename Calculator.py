@@ -178,50 +178,57 @@ if (Calculate_score):
         st.header(f"{name(third_place)} is in third place with {players_total_points[third_place]} {point_or_points(third_place)}!")
     def write_tied_for_first_place():
         st.header(f"{name(winner)} and {name(second_place)} are tied for first place with {players_total_points[winner]} {point_or_points(winner)} each!")
-    def all_tied_players():
+    def top_three_tied():
         st.header(f"{name(winner)}, {name(second_place)} and {name(third_place)} are all tied for first place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
     def write_tied_for_second_place():
         st.header(f"{name(second_place)} and {name(third_place)} are tied for second place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
     def write_tied_for_third():
         st.header(f"{name(third_place)} and {name(fourth_place)} are tied for thrid place with {players_total_points[third_place]} {point_or_points(third_place)} each!")
-
+    def all_players_tied(number_of_players):
+        what_to_say = ""
+        for places in range(int(number_of_players) - 1):
+            what_to_say += (f"{name(players_rank(places))}, ")
+        return f"{what_to_say} and {name(players_rank(places))} are all tied for first place with {players_total_points[winner]} {point_or_points(third_place)} each!"
+    #if players_rank(0) == players_rank(int(player_count)-1):
+    #    all_players_tied(player_count)
+    #else:    
     if int(players.split()[0]) > 2:
-        third_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[2]
-        if int(players.split()[0]) > 3:
-            fourth_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[3]
+            third_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[2]
+            if int(players.split()[0]) > 3:
+                fourth_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[3]
         
-        if players_rank(0) == players_rank(1):
-            if players_rank(0) == players_rank(2):
-                all_tied_players()
+            if players_rank(0) == players_rank(1):
+                if players_rank(0) == players_rank(2):
+                    top_three_tied()
             
-            elif players_rank(2) == players_rank(3):
-                write_tied_for_first_place()
-                write_tied_for_third()
+                elif players_rank(2) == players_rank(3):
+                    write_tied_for_first_place()
+                    write_tied_for_third()
             
-            else:
-                write_tied_for_first_place()
-                write_third_place()
+                else:
+                    write_tied_for_first_place()
+                    write_third_place()
                 
-        elif players_rank(1) == players_rank(2):
-            write_winner()
-            write_tied_for_second_place()
+            elif players_rank(1) == players_rank(2):
+                write_winner()
+                write_tied_for_second_place()
 
-        else:
-            if players_rank(2) == players_rank(3):
-                write_winner()
-                write_second_place()
-                write_tied_for_third()
             else:
-                write_winner()
-                write_second_place()
-                write_third_place()
+                if players_rank(2) == players_rank(3):
+                    write_winner()
+                    write_second_place()
+                    write_tied_for_third()
+                else:
+                    write_winner()
+                    write_second_place()
+                    write_third_place()
 
     elif players_rank(0) == players_rank(1):
-        write_tied_for_first_place()
+            write_tied_for_first_place()
 
     else:
-        write_winner()
-        write_second_place()
+            write_winner()
+            write_second_place()
 
 if st.button("Reset"):
     #Reloads borwser
