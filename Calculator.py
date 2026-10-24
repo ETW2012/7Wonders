@@ -162,7 +162,7 @@ if Calculate_score:
             st.subheader(f'{name(player_number)} got a total of {players_total_points[str(player_number)]} points')
     
     make_line()
-    st.subheader("Final standings")
+    st.subheader("Final standings:")
     sorted_players = sorted(
         players_total_points.items(),
         key=lambda player_score: player_score[1],
@@ -200,6 +200,8 @@ if Calculate_score:
             )
 
         place += len(tied_players)
+
+    make_line()
 
 if st.button("Reset"):
     #Reloads borwser
