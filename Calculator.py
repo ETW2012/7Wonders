@@ -1,4 +1,5 @@
 import base64
+from itertools import groupby
 from pathlib import Path
 import streamlit as st
 from streamlit_js_eval import streamlit_js_eval
@@ -152,14 +153,7 @@ make_line()
  
 Calculate_score = st.button("Calculate Score")
 
-if (Calculate_score):
-    def players_rank(index):
-        return int(sorted(players_total_points.values(), reverse=True)[index])
-
-    def point_or_points(place):
-        return [point if players_total_points[place] == 1 else points for point, points in [("point", "points")]][0]
-
-
+if Calculate_score:
     for player in range(int(players.split()[0])):
         player_number = player + 1
         if players_total_points[str(player_number)] == 1:
@@ -168,71 +162,44 @@ if (Calculate_score):
             st.subheader(f'{name(player_number)} got a total of {players_total_points[str(player_number)]} points')
     
     make_line()
+    st.subheader("Final standings")
+    sorted_players = sorted(
+        players_total_points.items(),
+        key=lambda player_score: player_score[1],
+        reverse=True
+    )
+    place_names = {1: "first", 2: "second", 3: "third"}
+    place = 1
 
-    places = ["winner", "second place", "third place"]
+    for score, tied_players in groupby(sorted_players, key=lambda player_score: player_score[1]):
+        tied_players = list(tied_players)
+        tied_names = [name(player_number) for player_number, _ in tied_players]
+        if len(tied_names) == 1:
+            display_names = tied_names[0]
+        else:
+            display_names = f"{', '.join(tied_names[:-1])} and {tied_names[-1]}"
 
-    winner = sorted(players_total_points, key=players_total_points.get, reverse=True)[0]
-    second_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[1]
+        place_name = place_names.get(place, f"{place}th")
+        points_label = "point" if score == 1 else "points"
+        if place == 1 and len(tied_names) > 1:
+            st.header(
+                f"{display_names} are tied for first place with {score} "
+                f"{points_label}!"
+            )
+        elif place == 1:
+            st.header(f"{display_names} is the winner with {score} {points_label}!")
+        elif len(tied_names) > 1:
+            st.header(
+                f"{display_names} are tied for {place_name} place with "
+                f"{score} {points_label}!"
+            )
+        else:
+            st.header(
+                f"{display_names} is in {place_name} place with "
+                f"{score} {points_label}!"
+            )
 
-    def write_winner():
-        st.header(f"{name(winner)} is the winner with {players_total_points[winner]} {point_or_points(winner)}!")
-    def write_second_place():
-        st.header(f"{name(second_place)} is in second place with {players_total_points[second_place]} {point_or_points(second_place)}!")
-    def write_third_place():
-        st.header(f"{name(third_place)} is in third place with {players_total_points[third_place]} {point_or_points(third_place)}!")
-    def write_tied_for_first_place():
-        st.header(f"{name(winner)} and {name(second_place)} are tied for first place with {players_total_points[winner]} {point_or_points(winner)} each!")
-    def top_three_tied():
-        st.header(f"{name(winner)}, {name(second_place)} and {name(third_place)} are all tied for first place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
-    def write_tied_for_second_place():
-        st.header(f"{name(second_place)} and {name(third_place)} are tied for second place with {players_total_points[second_place]} {point_or_points(second_place)} each!")
-    def write_tied_for_third():
-        st.header(f"{name(third_place)} and {name(fourth_place)} are tied for thrid place with {players_total_points[third_place]} {point_or_points(third_place)} each!")
-    def all_players_tied(number_of_players):
-        what_to_say = ""
-        for places in range(int(number_of_players) - 1):
-            what_to_say += (f"{name(players_rank(places))}, ")
-        return f"{what_to_say} and {name(players_rank(places))} are all tied for first place with {players_total_points[winner]} {point_or_points(third_place)} each!"
-    #if players_rank(0) == players_rank(int(player_count)-1):
-    #    all_players_tied(player_count)
-    #else:    
-    if int(players.split()[0]) > 2:
-            third_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[2]
-            if int(players.split()[0]) > 3:
-                fourth_place = sorted(players_total_points, key=players_total_points.get, reverse=True)[3]
-        
-            if players_rank(0) == players_rank(1):
-                if players_rank(0) == players_rank(2):
-                    top_three_tied()
-            
-                elif players_rank(2) == players_rank(3):
-                    write_tied_for_first_place()
-                    write_tied_for_third()
-            
-                else:
-                    write_tied_for_first_place()
-                    write_third_place()
-                
-            elif players_rank(1) == players_rank(2):
-                write_winner()
-                write_tied_for_second_place()
-
-            else:
-                if players_rank(2) == players_rank(3):
-                    write_winner()
-                    write_second_place()
-                    write_tied_for_third()
-                else:
-                    write_winner()
-                    write_second_place()
-                    write_third_place()
-
-    elif players_rank(0) == players_rank(1):
-            write_tied_for_first_place()
-
-    else:
-            write_winner()
-            write_second_place()
+        place += len(tied_players)
 
 if st.button("Reset"):
     #Reloads borwser
