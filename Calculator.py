@@ -81,20 +81,23 @@ for player in range(player_count):
     make_line()
     total_points = 0
     first_row = st.columns(3)
-
+    point_inputs = []
+    
     with first_row[0]:
         coin_input = st.text_input(
             label = f"{name(player+1)}'s Number of coins:",
             placeholder = "Not points from coins")
-    point_inputs = []
+    
     with first_row[1]:
         point_inputs.append(st.text_input(
             label = f"{name(player+1)}'s {point_types[0]}",
             placeholder = card_colours[0]))
+    
     with first_row[2]:
         point_inputs.append(st.text_input(
             label = f"{name(player+1)}'s {point_types[1]}",
             placeholder = card_colours[1]))
+        
     try:
         total_points += int(coin_input)//3
     except ValueError:
@@ -147,6 +150,7 @@ for player in range(player_count):
         total_points += squared_points + set_bonus_points
     except ValueError:
         total_points += 0
+
     players_total_points.update({str(player+1): total_points})
 
 make_line()
@@ -162,18 +166,21 @@ if Calculate_score:
             st.subheader(f'{name(player_number)} got a total of {players_total_points[str(player_number)]} points')
     
     make_line()
+
     st.subheader("Final standings:")
     sorted_players = sorted(
         players_total_points.items(),
         key=lambda player_score: player_score[1],
         reverse=True
     )
+
     place_names = {1: "first", 2: "second", 3: "third"}
     place = 1
 
     for score, tied_players in groupby(sorted_players, key=lambda player_score: player_score[1]):
         tied_players = list(tied_players)
         tied_names = [name(player_number) for player_number, _ in tied_players]
+        
         if len(tied_names) == 1:
             display_names = tied_names[0]
         else:
@@ -181,6 +188,7 @@ if Calculate_score:
 
         place_name = place_names.get(place, f"{place}th")
         points_label = "point" if score == 1 else "points"
+
         if place == 1 and len(tied_names) > 1:
             st.header(
                 f"{display_names} are tied for first place with {score} "
@@ -188,6 +196,7 @@ if Calculate_score:
             )
         elif place == 1:
             st.header(f"{display_names} is the winner with {score} {points_label}!")
+        
         elif len(tied_names) > 1:
             st.header(
                 f"{display_names} are tied for {place_name} place with "
