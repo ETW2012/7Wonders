@@ -43,7 +43,7 @@ for start in range(0, player_count, 3):
     name_columns = st.columns(3)
     for player in range(start, min(start + 3, player_count)):
         with name_columns[player - start]:
-            player_names[player] = st.text_input(f"Player {player+1} Name")
+            player_names[player] = st.text_input(f"Player {player+1} Name:")
 
 def player_display_name(player_number):
     name = player_names[player_number - 1].strip()
@@ -69,6 +69,7 @@ card_colours = [
 ]
 
 players_total_points = {}
+players_coins = {}
 
 def test_if_integer_and_square(value):
     try:
@@ -85,7 +86,7 @@ for player in range(player_count):
     
     with first_row[0]:
         coin_input = st.text_input(
-            label = f"{name(player+1)}'s Number of coins:",
+            label = f"{name(player+1)}'s Number of Coins:",
             placeholder = "Not points from coins")
     
     with first_row[1]:
@@ -99,9 +100,10 @@ for player in range(player_count):
             placeholder = card_colours[1]))
         
     try:
-        total_points += int(coin_input)//3
+        coins = int(coin_input)
     except ValueError:
-        total_points += 0
+        coins = 0
+    total_points += coins // 3
 
     second_row = st.columns(3)
     for index, column in enumerate(second_row, start=2):
@@ -121,21 +123,30 @@ for player in range(player_count):
     image_1, compass, image_2, gear, image_3, tablet = st.columns(6)
     with image_1:
         st.write("")
-        st.image("C:/Users/User/Downloads/hackclub things/3.png", width = 130)
+        st.image("C:/Users/User/Downloads/hackclub things/3.png", width = 135)
     with compass:
-        Compass_input = st.text_input("", key = f"{player + 1} compasses")
+        Compass_input = st.text_input(
+            "", 
+            placeholder = "Green cards", 
+            key = f"{player + 1} compasses")
         
     with image_2:
         st.write("")
-        st.image("C:/Users/User/Downloads/hackclub things/2.png", width = 130)
+        st.image("C:/Users/User/Downloads/hackclub things/2.png", width = 135)
     with gear:
-        Gear_input = st.text_input("", key = f"{player + 1} gears")
+        Gear_input = st.text_input(
+            "",
+            placeholder = "Green cards", 
+            key = f"{player + 1} gears")
     
     with image_3:
         st.write("")
-        st.image("C:/Users/User/Downloads/hackclub things/1.png", width = 130)
+        st.image("C:/Users/User/Downloads/hackclub things/1.png", width = 135)
     with tablet:
-        Tablet_input = st.text_input("", key = f"{player + 1} tablets")
+        Tablet_input = st.text_input(
+            "",
+            placeholder = "Green cards", 
+            key = f"{player + 1} tablets")
     
     compass_points = test_if_integer_and_square(Compass_input)
     gear_points = test_if_integer_and_square(Gear_input)
@@ -150,7 +161,8 @@ for player in range(player_count):
         total_points += squared_points + set_bonus_points
     except ValueError:
         total_points += 0
-
+    players_total_points.update({str(player+1): total_points})
+    players_coins.update({str(player+1): coins})
     players_total_points.update({str(player+1): total_points})
 
 make_line()
@@ -161,24 +173,68 @@ if Calculate_score:
     for player in range(int(players.split()[0])):
         player_number = player + 1
         if players_total_points[str(player_number)] == 1:
-            st.subheader(f'{name(player_number)} got a total of {players_total_points[str(player_number)]} point')
+            st.subheader(f'{name(player_number)} - {players_total_points[str(player_number)]} point')
         else:
-            st.subheader(f'{name(player_number)} got a total of {players_total_points[str(player_number)]} points')
+            st.subheader(f'{name(player_number)} - {players_total_points[str(player_number)]} points')
     
     make_line()
 
     st.subheader("Final standings:")
     sorted_players = sorted(
         players_total_points.items(),
-        key=lambda player_score: player_score[1],
+        key=lambda player_score: (
+            player_score[1],
+            players_coins[player_score[0]]
+        ),
         reverse=True
     )
+    standing_groups = [
+        (score_and_coins, list(tied_players))
+        for score_and_coins, tied_players in groupby(
+            sorted_players,
+            key=lambda player_score: (
+                player_score[1],
+                players_coins[player_score[0]]
+            )
+        )
+    ]
+
+    podium_places = {}
+    place = 1
+    for (score, coins), tied_players in standing_groups:
+        if place <= 3:
+            podium_places[place] = (score, coins, tied_players)
+        place += len(tied_players)
+
+    podium_columns = st.columns(3, vertical_alignment="bottom")
+    box_heights = {1: 240, 2: 180, 3: 140}
+    for column, place_number, medal, place_label in [
+        (podium_columns[0], 2, "🥈", "Second place"),
+        (podium_columns[1], 1, "🥇", "First place"),
+        (podium_columns[2], 3, "🥉", "Third place"),
+    ]:
+        with column:
+            with st.container(height=box_heights[place_number], border=True):
+                st.subheader(f"{medal} {place_label}")
+                podium_group = podium_places.get(place_number)
+                if podium_group:
+                    score, coins, tied_players = podium_group
+                    for player_number, _ in tied_players:
+                        st.write(name(player_number))
+                    points_label = "point" if score == 1 else "points"
+                    st.write(f"**{score} {points_label}**")
+                    st.caption(f"{coins} coins")
+                else:
+                    st.write("No player in this place")
 
     place_names = {1: "first", 2: "second", 3: "third"}
     place = 1
 
-    for score, tied_players in groupby(sorted_players, key=lambda player_score: player_score[1]):
-        tied_players = list(tied_players)
+    for (score, coins), tied_players in standing_groups:
+        if place <= 3:
+            place += len(tied_players)
+            continue
+
         tied_names = [name(player_number) for player_number, _ in tied_players]
         
         if len(tied_names) == 1:
