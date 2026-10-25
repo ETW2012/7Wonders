@@ -3,6 +3,7 @@ from itertools import groupby
 from pathlib import Path
 import streamlit as st
 from streamlit_js_eval import streamlit_js_eval
+import pandas as pd
 
 st.title("7 Wonders Score Calculator", text_alignment="center")
 
@@ -31,19 +32,25 @@ def make_line():
 
 make_line()
 
-players = st.selectbox(
-    "Select number of players:",
-    options = ["2 Players", "3 Players", "4 Players", "5 Players", "6 Players", "7 Players"]
-)
+players_col1, players_col2, players_clo3 = st.columns(3)
+
+with players_col1:
+    players = st.selectbox(
+        "Select number of players:",
+        options = ["2 Players", "3 Players", "4 Players", "5 Players", "6 Players", "7 Players"]
+    )
 
 player_count = int(players.split()[0])
 player_names = [""] * player_count
+
+st.write("")
+st.write("Player names:")
 
 for start in range(0, player_count, 3):
     name_columns = st.columns(3)
     for player in range(start, min(start + 3, player_count)):
         with name_columns[player - start]:
-            player_names[player] = st.text_input(f"Player {player+1} Name:")
+            player_names[player] = st.text_input(label = "", placeholder = f"Player {player+1} Name")
 
 def player_display_name(player_number):
     name = player_names[player_number - 1].strip()
@@ -51,7 +58,7 @@ def player_display_name(player_number):
 
 def name(place):
     return player_display_name(int(place))
-    
+
 point_types = [
     "Wonder Points:",
     "Military Points:",
@@ -118,7 +125,7 @@ for player in range(player_count):
         except ValueError:
             total_points += 0
 
-    st.write(f"{name(player+1)}'s Sciences (green):")
+    st.write(f"{name(player+1)}'s Science Points:")
 
     image_1, compass, image_2, gear, image_3, tablet = st.columns(6)
     with image_1:
@@ -126,7 +133,7 @@ for player in range(player_count):
         st.image("C:/Users/User/Downloads/hackclub things/3.png", width = 135)
     with compass:
         Compass_input = st.text_input(
-            "", 
+            label = "", 
             placeholder = "Green cards", 
             key = f"{player + 1} compasses")
         
@@ -135,7 +142,7 @@ for player in range(player_count):
         st.image("C:/Users/User/Downloads/hackclub things/2.png", width = 135)
     with gear:
         Gear_input = st.text_input(
-            "",
+            label = "",
             placeholder = "Green cards", 
             key = f"{player + 1} gears")
     
@@ -144,7 +151,7 @@ for player in range(player_count):
         st.image("C:/Users/User/Downloads/hackclub things/1.png", width = 135)
     with tablet:
         Tablet_input = st.text_input(
-            "",
+            label = "",
             placeholder = "Green cards", 
             key = f"{player + 1} tablets")
     
@@ -161,23 +168,19 @@ for player in range(player_count):
         total_points += squared_points + set_bonus_points
     except ValueError:
         total_points += 0
+    
     players_total_points.update({str(player+1): total_points})
     players_coins.update({str(player+1): coins})
     players_total_points.update({str(player+1): total_points})
 
 make_line()
- 
-Calculate_score = st.button("Calculate Score")
+
+col1, col2, clo3 = st.columns(3)
+
+with col2:
+    Calculate_score = st.button("Calculate Score", width = "stretch")
 
 if Calculate_score:
-    for player in range(int(players.split()[0])):
-        player_number = player + 1
-        if players_total_points[str(player_number)] == 1:
-            st.subheader(f'{name(player_number)} - {players_total_points[str(player_number)]} point')
-        else:
-            st.subheader(f'{name(player_number)} - {players_total_points[str(player_number)]} points')
-    
-    make_line()
 
     st.subheader("Final standings:")
     sorted_players = sorted(
@@ -201,6 +204,7 @@ if Calculate_score:
 
     podium_places = {}
     place = 1
+    
     for (score, coins), tied_players in standing_groups:
         if place <= 3:
             podium_places[place] = (score, coins, tied_players)
@@ -208,70 +212,56 @@ if Calculate_score:
 
     podium_columns = st.columns(3, vertical_alignment="bottom")
     box_heights = {1: 240, 2: 180, 3: 140}
-    for column, place_number, medal, place_label in [
-        (podium_columns[0], 2, "🥈", "Second place"),
-        (podium_columns[1], 1, "🥇", "First place"),
-        (podium_columns[2], 3, "🥉", "Third place"),
+    for column, place_number, medal, in [
+        (podium_columns[0], 2, "🥈"),
+        (podium_columns[1], 1, "🥇"),
+        (podium_columns[2], 3, "🥉"),
     ]:
+        
         with column:
             with st.container(height=box_heights[place_number], border=True):
-                st.subheader(f"{medal} {place_label}")
+                st.title(medal, text_alignment = "center")
                 podium_group = podium_places.get(place_number)
                 if podium_group:
                     score, coins, tied_players = podium_group
                     for player_number, _ in tied_players:
-                        st.write(name(player_number))
-                    points_label = "point" if score == 1 else "points"
-                    st.write(f"**{score} {points_label}**")
-                    st.caption(f"{coins} coins")
+                        st.header(name(player_number), text_alignment = "center")
+                
                 else:
                     st.write("No player in this place")
 
-    place_names = {1: "first", 2: "second", 3: "third"}
-    place = 1
+    st.subheader("")
+    
+    names = []
+    points = []
 
-    for (score, coins), tied_players in standing_groups:
-        if place <= 3:
-            place += len(tied_players)
-            continue
-
-        tied_names = [name(player_number) for player_number, _ in tied_players]
-        
-        if len(tied_names) == 1:
-            display_names = tied_names[0]
+    for player in range(int(players.split()[0])):
+        player_number = player + 1
+        names.append(name(player_number))
+        if players_total_points[str(player_number)] == 1:
+            points.append(f"{players_total_points[str(player_number)]} point")
         else:
-            display_names = f"{', '.join(tied_names[:-1])} and {tied_names[-1]}"
+            points.append(f"{players_total_points[str(player_number)]} points")
 
-        place_name = place_names.get(place, f"{place}th")
-        points_label = "point" if score == 1 else "points"
-
-        if place == 1 and len(tied_names) > 1:
-            st.header(
-                f"{display_names} are tied for first place with {score} "
-                f"{points_label}!"
-            )
-        elif place == 1:
-            st.header(f"{display_names} is the winner with {score} {points_label}!")
         
-        elif len(tied_names) > 1:
-            st.header(
-                f"{display_names} are tied for {place_name} place with "
-                f"{score} {points_label}!"
-            )
-        else:
-            st.header(
-                f"{display_names} is in {place_name} place with "
-                f"{score} {points_label}!"
-            )
+    points_table = pd.DataFrame({
+        "Names": names,
+        "Points": points
+    })
 
-        place += len(tied_players)
+    points_table_no_index = points_table.reset_index(drop=True)
 
+    st.table(points_table_no_index)
+    
     make_line()
 
-if st.button("Reset"):
-    #Reloads borwser
-    streamlit_js_eval(js_expressions="parent.window.location.reload()")
+reset_col1, reset_col2, reset_clo3 = st.columns(3)
+
+with reset_col2:
+    if st.button("Reset", width = "stretch"):
+        #Reloads borwser
+        streamlit_js_eval(js_expressions="parent.window.location.reload()")
 
 make_line()
 
-st.write("By: Elliot Wijoyo")
+st.write("By: Elliot.W")
