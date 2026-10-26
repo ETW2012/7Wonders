@@ -5,12 +5,13 @@ import streamlit as st
 from streamlit_js_eval import streamlit_js_eval
 import pandas as pd
 
-st.title("7 Wonders Score Calculator", text_alignment="center")
+st.title("7 Wonders Score Calculator", text_alignment = "center")
 
 background_image = base64.b64encode(
     Path("C:/Users/User/Downloads/7 wonders banner.jpg").read_bytes()
 ).decode("ascii")
 
+#For background image
 st.markdown(
     f"""
     <style>
@@ -32,8 +33,8 @@ def make_line():
 
 make_line()
 
+# makes select box smaller
 players_col1, players_col2, players_clo3 = st.columns(3)
-
 with players_col1:
     players = st.selectbox(
         "Select number of players:",
@@ -45,6 +46,7 @@ player_names = [""] * player_count
 
 st.write("")
 st.write("Player names:")
+
 
 for start in range(0, player_count, 3):
     name_columns = st.columns(3)
@@ -87,38 +89,56 @@ def test_if_integer_and_square(value):
 
 for player in range(player_count):
     make_line()
+
     total_points = 0
     first_row = st.columns(3)
     point_inputs = []
-    
+
+    # Puts coins in column slot
     with first_row[0]:
-        coin_input = st.text_input(
+        coin_input = st.number_input(
             label = f"{name(player+1)}'s Number of Coins:",
-            placeholder = "Not points from coins")
-    
+            placeholder = "Not points from coins",
+            value = 0,
+            step = 1,
+            min_value = 0)
+
+    # Adds second input box in first row
     with first_row[1]:
-        point_inputs.append(st.text_input(
+        point_inputs.append(st.number_input(
             label = f"{name(player+1)}'s {point_types[0]}",
-            placeholder = card_colours[0]))
-    
+            placeholder = card_colours[0],
+            value = 0,
+            step = 1,
+            min_value = 0))
+
+    # Adds third input box in first row
     with first_row[2]:
-        point_inputs.append(st.text_input(
+        point_inputs.append(st.number_input(
             label = f"{name(player+1)}'s {point_types[1]}",
-            placeholder = card_colours[1]))
-        
+            placeholder = card_colours[1],
+            value = 0,
+            step = 1,))
+
+    # Calculates coin amount
     try:
         coins = int(coin_input)
     except ValueError:
         coins = 0
     total_points += coins // 3
 
+    # Creates input boxes in second row
     second_row = st.columns(3)
-    for index, column in enumerate(second_row, start=2):
+    for index, column in enumerate(second_row, start = 2):
         with column:
-            point_inputs.append(st.text_input(
+            point_inputs.append(st.number_input(
                 label = f"{name(player+1)}'s {point_types[index]}",
-                placeholder = card_colours[index]))
+                placeholder = card_colours[index],
+                value = 0,
+                step = 1,
+                min_value = 0))
 
+    # Adda point from user input
     for user_input in point_inputs:
         try:
             total_points += int(user_input)
@@ -128,74 +148,97 @@ for player in range(player_count):
     st.write(f"{name(player+1)}'s Science Points:")
 
     image_1, compass, image_2, gear, image_3, tablet = st.columns(6)
+
+    # Creates compass image and input box
     with image_1:
         st.write("")
         st.image("C:/Users/User/Downloads/hackclub things/3.png", width = 135)
     with compass:
-        Compass_input = st.text_input(
+        Compass_input = st.number_input(
             label = "", 
             placeholder = "Green cards", 
-            key = f"{player + 1} compasses")
-        
+            key = f"{player + 1} compasses",
+            value = 0,
+            step = 1,
+            min_value = 0)
+
+    # Creates gear image and input box        
     with image_2:
         st.write("")
         st.image("C:/Users/User/Downloads/hackclub things/2.png", width = 135)
     with gear:
-        Gear_input = st.text_input(
+        Gear_input = st.number_input(
             label = "",
             placeholder = "Green cards", 
-            key = f"{player + 1} gears")
-    
+            key = f"{player + 1} gears",
+            value = 0,
+            step = 1,
+            min_value = 0)
+
+    # Creates tablet image and input box    
     with image_3:
         st.write("")
         st.image("C:/Users/User/Downloads/hackclub things/1.png", width = 135)
     with tablet:
-        Tablet_input = st.text_input(
+        Tablet_input = st.number_input(
             label = "",
             placeholder = "Green cards", 
-            key = f"{player + 1} tablets")
-    
+            key = f"{player + 1} tablets",
+            value = 0,
+            step = 1,
+            min_value = 0)
+
+    # Tests and squares values
     compass_points = test_if_integer_and_square(Compass_input)
     gear_points = test_if_integer_and_square(Gear_input)
     tablet_points = test_if_integer_and_square(Tablet_input)
     squared_points = compass_points + gear_points + tablet_points
+
+    # Adds up science points
     try:
         complete_sets = min(int(Compass_input), int(Gear_input), int(Tablet_input))
     except ValueError:
         complete_sets = 0
     set_bonus_points = complete_sets * 7
+
+    # Adds up all the points
     try:
         total_points += squared_points + set_bonus_points
     except ValueError:
         total_points += 0
-    
+
+    # Updates players points
     players_total_points.update({str(player+1): total_points})
     players_coins.update({str(player+1): coins})
     players_total_points.update({str(player+1): total_points})
 
 make_line()
 
+# Moves button to the center
 col1, col2, clo3 = st.columns(3)
-
 with col2:
     Calculate_score = st.button("Calculate Score", width = "stretch")
 
 if Calculate_score:
 
     st.subheader("Final standings:")
+
+    # Sorts players into a list
     sorted_players = sorted(
         players_total_points.items(),
-        key=lambda player_score: (
+        key = lambda player_score: (
             player_score[1],
             players_coins[player_score[0]]
         ),
         reverse=True
     )
+
+    # Sorts players into alist with tied players
     standing_groups = [
         (score_and_coins, list(tied_players))
         for score_and_coins, tied_players in groupby(
             sorted_players,
-            key=lambda player_score: (
+            key = lambda player_score: (
                 player_score[1],
                 players_coins[player_score[0]]
             )
@@ -204,12 +247,14 @@ if Calculate_score:
 
     podium_places = {}
     place = 1
-    
+
+    # Checks coins for ties    
     for (score, coins), tied_players in standing_groups:
         if place <= 3:
             podium_places[place] = (score, coins, tied_players)
         place += len(tied_players)
 
+    # Sets medal emojis
     podium_columns = st.columns(3, vertical_alignment="bottom")
     box_heights = {1: 240, 2: 180, 3: 140}
     for column, place_number, medal, in [
@@ -217,7 +262,8 @@ if Calculate_score:
         (podium_columns[1], 1, "🥇"),
         (podium_columns[2], 3, "🥉"),
     ]:
-        
+
+        # Creates podium
         with column:
             with st.container(height=box_heights[place_number], border=True):
                 st.title(medal, text_alignment = "center")
@@ -231,32 +277,32 @@ if Calculate_score:
                     st.write("No player in this place")
 
     st.subheader("")
-    
+
     names = []
     points = []
 
+    # Creates table
     for player in range(int(players.split()[0])):
         player_number = player + 1
         names.append(name(player_number))
         if players_total_points[str(player_number)] == 1:
             points.append(f"{players_total_points[str(player_number)]} point")
         else:
-            points.append(f"{players_total_points[str(player_number)]} points")
-
-        
+            points.append(f"{players_total_points[str(player_number)]} points")    
     points_table = pd.DataFrame({
         "Names": names,
         "Points": points
     })
 
+    # Removes unnessesary numbers
     points_table_no_index = points_table.reset_index(drop=True)
 
     st.table(points_table_no_index)
     
     make_line()
 
+# Moves button to the center
 reset_col1, reset_col2, reset_clo3 = st.columns(3)
-
 with reset_col2:
     if st.button("Reset", width = "stretch"):
         #Reloads borwser
