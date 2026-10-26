@@ -2,7 +2,7 @@ import base64
 from itertools import groupby
 from pathlib import Path
 import streamlit as st
-from streamlit_js_eval import streamlit_js_eval
+#from streamlit_js_eval import streamlit_js_eval
 import pandas as pd
 
 st.title("7 Wonders Score Calculator", text_alignment = "center")
@@ -299,14 +299,14 @@ if Calculate_score:
 
     st.table(points_table_no_index)
     
-    make_line()
+    #make_line()
 
 # Moves button to the center
-reset_col1, reset_col2, reset_clo3 = st.columns(3)
-with reset_col2:
-    if st.button("Reset", width = "stretch"):
-        #Reloads borwser
-        streamlit_js_eval(js_expressions="parent.window.location.reload()")
+#reset_col1, reset_col2, reset_clo3 = st.columns(3)
+#with reset_col2:
+#    if st.button("Reset", width = "stretch"):
+#        #Reloads borwser
+#        streamlit_js_eval(js_expressions="parent.window.location.reload()")
 
 make_line()
 
