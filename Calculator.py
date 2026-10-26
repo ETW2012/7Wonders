@@ -7,8 +7,10 @@ import pandas as pd
 
 st.title("7 Wonders Score Calculator", text_alignment = "center")
 
+image_dir = Path(__file__).resolve().parent / "images"
+
 background_image = base64.b64encode(
-    Path("C:/Users/User/Downloads/7 wonders banner.jpg").read_bytes()
+    (image_dir / "7 wonders banner.jpg").read_bytes()
 ).decode("ascii")
 
 #For background image
@@ -152,7 +154,7 @@ for player in range(player_count):
     # Creates compass image and input box
     with image_1:
         st.write("")
-        st.image("C:/Users/User/Downloads/hackclub things/3.png", width = 135)
+        st.image(str(image_dir / "7 wonders compass.png"), width = 135)
     with compass:
         Compass_input = st.number_input(
             label = "", 
@@ -165,7 +167,7 @@ for player in range(player_count):
     # Creates gear image and input box        
     with image_2:
         st.write("")
-        st.image("C:/Users/User/Downloads/hackclub things/2.png", width = 135)
+        st.image(str(image_dir / "7 wonders gear.png"), width = 135)
     with gear:
         Gear_input = st.number_input(
             label = "",
@@ -178,7 +180,7 @@ for player in range(player_count):
     # Creates tablet image and input box    
     with image_3:
         st.write("")
-        st.image("C:/Users/User/Downloads/hackclub things/1.png", width = 135)
+        st.image(str(image_dir / "7 wonders tablet.png"), width = 135)
     with tablet:
         Tablet_input = st.number_input(
             label = "",
